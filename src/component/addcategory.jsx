@@ -11,7 +11,6 @@ function AddCategory() {
 
     const [formData, setFormData] = useState({
         name: "",
-        short_desc: "",
         parent_id: "",
         is_active: true,
         updated_by: 1,
@@ -19,7 +18,7 @@ function AddCategory() {
     });
 
     const [errors, setErrors] = useState({});
-
+    console.log(formData.short_desc);
 
     // load parent categories
     useEffect(() => {
@@ -79,7 +78,7 @@ function AddCategory() {
     };
 
 
-    const requiredFields = ["name", "short_desc"];
+    const requiredFields = ["name"];
 
 
     const handleSubmit = async (e) => {
@@ -103,11 +102,11 @@ function AddCategory() {
         }
 
         try {
-
             const response = await fetch(url, {
                 method: method,
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization":"Bearer " + sessionStorage.getItem("adminToken")
                 },
                 body: JSON.stringify(formData)
             });
@@ -156,23 +155,6 @@ function AddCategory() {
                 </div>
 
 
-                <div className="mb-3">
-                    <label className="form-label">Short Description</label>
-
-                    <input
-                        type="text"
-                        name="short_desc"
-                        className="form-control"
-                        value={formData.short_desc}
-                        onChange={handleChange}
-                    />
-
-                    {errors.short_desc && (
-                        <small style={{ color: "red" }}>{errors.short_desc}</small>
-                    )}
-
-                </div>
-
 
                 <div className="mb-3">
                     <label className="form-label">Parent Category</label>
@@ -198,7 +180,7 @@ function AddCategory() {
 
                 </div>
 
-
+            
                 <div className="mb-3">
                     <label className="form-label">Status</label>
 
