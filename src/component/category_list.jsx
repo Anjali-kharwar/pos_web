@@ -6,15 +6,18 @@ function CategoryList() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/category/list")
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setCategories(data);
-      })
-      .catch(error => {
-        console.error("Error:", error)
-      })
+    fetch("http://127.0.0.1:8000/category/list", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            setCategories(data);
+        })
+        .catch(error => console.log(error));
 
   }, []);
 
