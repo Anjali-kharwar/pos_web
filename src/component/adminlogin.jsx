@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 
 function Adminlogin() {
 
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const navigate = useNavigate();
+
 
     const [email_id, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -11,7 +13,7 @@ function Adminlogin() {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-        console.log("Emial", email_id)
+        console.log("Emial_id", email_id)
         console.log("password", password)
 
         const loginData = {
@@ -21,10 +23,11 @@ function Adminlogin() {
 
         try {
 
-            const response = await fetch("http://127.0.0.1:8000/admin_login/read", {
+           const response = await fetch(`${BASE_URL}admin_login/read`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
+                   
                 },
                 body: JSON.stringify(loginData)
             });
@@ -52,7 +55,7 @@ function Adminlogin() {
         } catch (error) {
 
             console.log(error);
-            alert("Server Error");
+            // alert("Server Error");
 
         }
 

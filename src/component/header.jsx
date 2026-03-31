@@ -1,8 +1,15 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 function Header({ toggleSidebar }) {
 
+    const navigate = useNavigate(); //  add this
     const name = sessionStorage.getItem("adminName");
+
+    const handleLogout = () => {
+        sessionStorage.clear(); //  token + name remove
+        navigate("/");     //  redirect
+    };
 
     return (
 
@@ -25,12 +32,16 @@ function Header({ toggleSidebar }) {
 
                 <div className="d-flex align-items-center gap-3">
 
-                    {/*  NAME SHOW */}
+                    {/* NAME SHOW */}
                     <span className="text-white">
                         Welcome {name}
                     </span>
 
-                    <button className="btn btn-danger">
+                    {/*  LOGOUT FIX */}
+                    <button 
+                        className="btn btn-danger"
+                        onClick={handleLogout}
+                    >
                         Logout
                     </button>
 
