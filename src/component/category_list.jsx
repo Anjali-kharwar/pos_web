@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function CategoryList() {
-
+ const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/category/list", {
+    fetch(`${BASE_URL}category/list`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -19,7 +19,7 @@ function CategoryList() {
         })
         .catch(error => console.log(error));
 
-  }, []);
+  }, [BASE_URL]);
 
 
   // DELETE FUNCTION
@@ -31,8 +31,13 @@ function CategoryList() {
 
     try {
 
-      const response = await fetch(`http://127.0.0.1:8000/category/delete/${id}`, {
-        method: "DELETE"
+      const response = await fetch(`${BASE_URL}category/delete/${id}`, {
+        method: "DELETE",
+        headers: {
+                 "Content-Type": "application/json",
+                 "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
+        }
+
       });
 
       if (response.ok) {
@@ -63,14 +68,13 @@ function CategoryList() {
         </Link>
 
       </div>
-
+    
       <table className="table table-striped">
 
         <thead>
           <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Description</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -83,7 +87,6 @@ function CategoryList() {
 
               <td>{cat.category_id}</td>
               <td>{cat.name}</td>
-              <td>{cat.short_desc}</td>
               <td>{cat.is_active ? "Yes" : "No"}</td>
 
               <td>
@@ -105,7 +108,7 @@ function CategoryList() {
 
         </tbody>
       </table>
-
+ 
     </div>
 
   );

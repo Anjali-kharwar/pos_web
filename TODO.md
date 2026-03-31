@@ -1,10 +1,10 @@
-# Debug Headers Not Showing in Network Tab
+# Fix /product_list Routing Error - Progress Tracker
 
 ## Steps:
-- [x] Understand issue: Custom 'testing' header likely triggers CORS preflight block
-- [x] Add console logs for token/headers in addcategory.jsx
-- [x] Temporarily remove 'testing' header to test
-- [ ] User tests: Check console, Network tab
-- [ ] Backend CORS fix if confirmed
-- [ ] Clean up debug code
-- [ ] Complete task
+- [x] 1. Create TODO.md with plan breakdown
+- [x] 2. Edit src/AppRoutes.jsx: Fix route path casing, add catch-all redirect
+- [x] 3. Edit src/component/product_list.jsx: Fix typos, links, data keys
+- [x] 4. Test: Refresh app, navigate to /product_list (login first)
+- [x] 5. Update TODO.md with completion
+- [x] 6. Attempt completion
+

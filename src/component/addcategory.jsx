@@ -4,6 +4,7 @@ import { validationForm } from "../utils/validation";
 
 function AddCategory() {
 
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -23,20 +24,20 @@ function AddCategory() {
     // load parent categories
     useEffect(() => {
 
-        fetch("http://127.0.0.1:8000/category/list", {
+        fetch(`${BASE_URL}category/list`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
             }
         })
-        .then(res => res.json())
-        .then(data => {
-            setCategories(data);
-        })
-        .catch(error => console.log(error));
+            .then(res => res.json())
+            .then(data => {
+                setCategories(data);
+            })
+            .catch(error => console.log(error));
 
-    }, []);
+    }, [BASE_URL]);
 
 
     // EDIT DATA LOAD
@@ -44,7 +45,13 @@ function AddCategory() {
 
         if (id) {
 
-            fetch(`http://127.0.0.1:8000/category/edit/${id}`)
+            fetch(`${BASE_URL}category/edit/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
+                }
+            })
                 .then(res => res.json())
                 .then(data => {
                     setFormData(data);
@@ -53,7 +60,7 @@ function AddCategory() {
 
         }
 
-    }, [id]);
+    }, [BASE_URL, id]);
 
 
     const handleChange = (e) => {
@@ -99,11 +106,11 @@ function AddCategory() {
         }
 
 
-        let url = "http://127.0.0.1:8000/category/save";
+        let url = `${BASE_URL}category/save`;
         let method = "POST";
 
         if (id) {
-            url = `http://127.0.0.1:8000/category/update/${id}`;
+            url = `${BASE_URL}category/update/${id}`;
             method = "PUT";
         }
 
@@ -112,7 +119,7 @@ function AddCategory() {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization":"Bearer " + sessionStorage.getItem("adminToken")
+                    "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
                 },
                 body: JSON.stringify(formData)
             });
@@ -146,11 +153,7 @@ function AddCategory() {
                 <div className="mb-3">
                     <label className="form-label">Category Name</label>
 
-                    <input
-                        type="text"
-                        name="name"
-                        className="form-control"
-                        value={formData.name}
+                    <input type="text" name="name" className="form-control"value={formData.name}
                         onChange={handleChange}
                     />
 
@@ -186,7 +189,7 @@ function AddCategory() {
 
                 </div>
 
-            
+
                 <div className="mb-3">
                     <label className="form-label">Status</label>
 

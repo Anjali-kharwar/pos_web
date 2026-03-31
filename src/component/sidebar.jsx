@@ -35,8 +35,13 @@ function Sidebar() {
                 </li>
 
                 <li className="mb-3">
-                    <Link to="/products" style={{ color: "white", textDecoration: "none" }}>
-                        Products
+                    <Link to="/product_list" style={{ color: "white", textDecoration: "none" }}>
+                        Products List
+                    </Link>
+                </li>
+                <li className="mb-3">
+                    <Link to="/user_list" style={{ color: "white", textDecoration: "none" }}>
+                        User List
                     </Link>
                 </li>
 
