@@ -24,24 +24,29 @@ function Sidebar() {
 
                 <li className="mb-3">
                     <Link to="/category_list" style={{ color: "white", textDecoration: "none" }}>
-                        Category List
+                        Categories
                     </Link>
                 </li>
 
-                <li className="mb-3">
+                {/* <li className="mb-3">
                     <Link to="/orders" style={{ color: "white", textDecoration: "none" }}>
                         Orders
                     </Link>
-                </li>
+                </li> */}
 
                 <li className="mb-3">
                     <Link to="/product_list" style={{ color: "white", textDecoration: "none" }}>
-                        Products List
+                        Products 
                     </Link>
                 </li>
                 <li className="mb-3">
                     <Link to="/user_list" style={{ color: "white", textDecoration: "none" }}>
-                        User List
+                        User Details
+                    </Link>
+                </li>
+                 <li className="mb-3">
+                    <Link to="/admin_list" style={{ color: "white", textDecoration: "none" }}>
+                        Admin
                     </Link>
                 </li>
 

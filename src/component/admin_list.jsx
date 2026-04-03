@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-function UsertList() {
+function AdminList() {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
-    const [users, setUsers] = useState([])
+    const [admins, setadmins] = useState([])
 
     useEffect(() => {
-        fetch(`${BASE_URL}user_details/list`, {
+        fetch(`${BASE_URL}admin_login/list`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -15,7 +15,7 @@ function UsertList() {
         })
             .then(res => res.json())
             .then(data => {
-                setUsers(data);
+                setadmins(data);
             })
             .catch(error => console.log(error));
 
@@ -25,13 +25,13 @@ function UsertList() {
   // DELETE FUNCTION
   const handleDelete = async (id) => {
 
-    if (!window.confirm("Are you sure you want to delete this Product?")) {
+    if (!window.confirm("Are you sure you want to delete ?")) {
       return;
     }
 
     try {
 
-      const response = await fetch(`${BASE_URL}user_details/delete/${id}`, {
+      const response = await fetch(`${BASE_URL}admin_login/delete/${id}`, {
         method: "DELETE",
         headers: {
                  "Content-Type": "application/json",
@@ -43,7 +43,7 @@ function UsertList() {
       if (response.ok) {
 
         // UI se remove kar denge
-        setUsers(users.filter(user => user.id !== id));
+        setadmins(admins.filter(admin => admin.id !== id));
 
       } else {
         alert("Delete failed");
@@ -61,10 +61,10 @@ function UsertList() {
 
             <div className="d-flex justify-content-between mb-3">
 
-                <h3>User List</h3>
+                <h3>Admin List</h3>
 
-                <Link to="/add_user_detail" className="btn btn-primary">
-                    Add  User
+                <Link to="/add_admin" className="btn btn-primary">
+                    Add  Admin
                 </Link>
             </div>
             <table className="table table-striped">
@@ -73,30 +73,29 @@ function UsertList() {
                     <tr>
                         <th>Id</th>
                         <th>Name</th>
-                        <th>last name</th>
-                        <th>Status</th>
+                        <th>email id</th>
                         <th>Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
-                    {users.map((user) => (
+                    {admins.map((admin) => (
                         <tr>
 
-                            <td>{user.id}</td>
-                            <td>{user.first_name}</td>
-                            <td>{user.last_name}</td>
-                            <td>{user.is_active ? "Yes" : "No"}</td>
+                            <td>{admin.id}</td>
+                            <td>{admin.name}</td>
+                            <td>{admin.email_id}</td>
+                
 
                             <td>
-                                <Link to={`/edit_user/${user.id}`} className="btn btn-warning btn-sm">
+                                <Link to={`/edit_admin/${admin.id}`} className="btn btn-warning btn-sm">
                                     Edit
                                 </Link>
 
                                 <button
                   className="btn btn-danger btn-sm"
-                  onClick={() => handleDelete(user.id)}
+                  onClick={() => handleDelete(admin.id)}
                 >
                   Delete
                 </button>
@@ -113,4 +112,4 @@ function UsertList() {
 
     );
 }
-export default UsertList;
+export default AdminList;

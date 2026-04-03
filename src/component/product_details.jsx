@@ -7,10 +7,12 @@ function AddProduct() {
     const BASE_URL = process.env.REACT_APP_BASE_URL;
 
     const [products, setproducts] = useState([])
+
     const navigate = useNavigate();
     const { id } = useParams();
+    const [imageUrl, setImageUrl] = useState("")
 
-    //load category 
+
     useEffect(() => {
 
         fetch(`${BASE_URL}category/list`, {
@@ -23,12 +25,14 @@ function AddProduct() {
             .then(res => res.json())
             .then(data => {
                 setproducts(data);
+                console.log("data", data)
             })
             .catch(error => console.log(error));
 
     }, [BASE_URL]);
 
-
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    sleep(1000);
     // EDIT DATA LOAD
     useEffect(() => {
 
@@ -44,6 +48,9 @@ function AddProduct() {
                 .then(res => res.json())
                 .then(data => {
                     setFormData(data);
+                    console.log("HHH", data)
+
+                    setImageUrl(`${BASE_URL}uploads/${data.image}`)
                 })
                 .catch(error => console.log(error));
 
@@ -63,33 +70,81 @@ function AddProduct() {
         mrp: "",
         qty: "",
         unit_of_measure: "",
+        image: "",
         is_active: true,
         updated_by: 1,
         created_by: 1,
-        image: "not aplode",
         category_id: ""
     });
     const [errors, setErrors] = useState({});
     console.log(formData);
 
+
+    //image uplode handlechange
+
+    const handleFileChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const data = new FormData();
+        data.append("file", file); //  key value 
+
+        try {
+            const res = await fetch(`${BASE_URL}product_details/image_upload`, {
+                method: "POST",
+                body: data
+            });
+
+            const result = await res.json();
+            console.log("UPLOAD RESPONSE:", result);
+            setImageUrl(`${BASE_URL}uploads/${result.image_url}`)
+
+
+            //  correct state update
+            setFormData(prev => ({
+                ...prev,
+                image: result.image_url,
+                category_id: result.category_id
+            }));
+
+        } catch (error) {
+            console.error("Upload failed:", error);
+        }
+    };
+
     const handleChange = (e) => {
 
-    const name = e.target.name;
-    let value = e.target.value;
+        const name = e.target.name;
+        let value = e.target.value;
 
-    if (name === "is_active") {
-        value = value === "true";
-    }
+        if (name === "is_active") {
+            value = value === "true";
 
-    if (name === "category_id") {
-        value = value === "" ? null : Number(value);
-    }
+        if(e.target.type ==="file"){
+            value = e.target.files[0];
+        }
+        }
+        if (name === "category_id" && value === "") {
+            value = null;
+        }
 
-    setFormData({
-        ...formData,
-        [name]: value
-    });
-};
+        setFormData({
+            ...formData,
+            [name]: value
+        });
+
+        if (errors[name]) {
+            setErrors({
+                ...errors,
+                [name]: ""
+            });
+        }
+
+
+    };
+
+
+
     const requiredFields = [
         "name",
         "short_description",
@@ -98,8 +153,10 @@ function AddProduct() {
         "sale_price",
         "cost_price",
         "mrp",
+        "image",
         "qty",
-        "unit_of_measure"
+        "unit_of_measure",
+
     ];
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -112,7 +169,6 @@ function AddProduct() {
         }
 
         try {
-
             let url = "";
             let method = "";
 
@@ -124,21 +180,28 @@ function AddProduct() {
                 method = "POST";
             }
 
+
+
             const response = await fetch(url, {
                 method: method,
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    ...formData,
+                    image: formData.image,
+                    category_id: parseInt(formData.category_id)
+
+
+                })
             });
 
             const data = await response.json();
 
-            //  EXACT tumhara wala logic
             if (response.ok) {
                 alert(id ? "Product Updated Successfully" : "Product Added Successfully");
-                navigate("/product_list");  //  redirect
+                navigate("/product_list");
             } else {
                 alert("Error: " + (data?.detail || "Something went wrong"));
             }
@@ -148,7 +211,6 @@ function AddProduct() {
             alert("Something went wrong");
         }
     };
-
     return (
         <div className="container mt-4">
             <form className="w-50" onSubmit={handleSubmit}>
@@ -179,6 +241,33 @@ function AddProduct() {
                     {errors.short_description && (
                         <p style={{ color: "red" }}>{errors.short_description}</p>
                     )}
+                </div>
+                <div className="mb-3">
+                    <label>Product Image</label>
+                    <input
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        className="form-control"
+                        onChange={handleFileChange}
+                        
+                    />
+                    {errors.image && (
+                        <p style={{ color: "red" }}>{errors.image}</p>
+                    )}
+                    <input
+                        type="hidden"
+                        name="image"
+                        value={formData.image}
+                    />
+                    <img
+                        style={{
+                            width: "120px",
+                            height: "120px",
+                            objectFit: "cover",
+                            marginTop: "10px"
+                        }}
+                        src={imageUrl} alt="uploaded" />
                 </div>
 
                 {/* DESCRIPTION */}
@@ -296,36 +385,34 @@ function AddProduct() {
                         value={formData.category_id || ""}
                         onChange={handleChange}
                     >
-                        <option value="">Select Category</option>
+                        <option value="0">Select Category</option>
 
-                        {products.map((product) => (
-
-                            <option value={product.category_id}>
-                                {product.name}
+                        {products.map((cat) => (
+                            <option key={cat.category_id} value={cat.category_id}>
+                                {cat.name}
                             </option>
-
                         ))}
+                    </select>
+                </div>
+
+
+                <div className="mb-3">
+                    <label className="form-label">Status</label>
+
+                    <select
+                        className="form-control" name="is_active"
+                        value={formData.is_active.toString()}
+                        onChange={handleChange}
+                    >
+
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
 
                     </select>
 
-
-                    <div className="mb-3">
-                        <label className="form-label">Status</label>
-
-                        <select
-                            className="form-control" name="is_active"
-                            value={formData.is_active.toString()}
-                            onChange={handleChange}
-                        >
-
-                            <option value="true">Active</option>
-                            <option value="false">Inactive</option>
-
-                        </select>
-
-                    </div>
-
                 </div>
+
+
                 <button type="submit" className="btn btn-primary">
                     Submit
                 </button>

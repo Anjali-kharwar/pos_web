@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { validationForm } from "../utils/validation";
 
-function AddUserDetail() {
+function AddadminLogin() {
   const BASE_URL = process.env.REACT_APP_BASE_URL;
   const navigate = useNavigate();
   const { id } = useParams();
 
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
+    name: "",
     password: "",
     email_id: "",
     is_active: true,
@@ -19,10 +18,10 @@ function AddUserDetail() {
 
   const [errors, setErrors] = useState({});
 
-  // ✅ EDIT DATA LOAD
+  //  EDIT DATA LOAD
   useEffect(() => {
     if (id) {
-      fetch(`${BASE_URL}user_details/edit/${id}`, {
+      fetch(`${BASE_URL}admin_login/edit/${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -31,6 +30,7 @@ function AddUserDetail() {
       })
         .then((res) => res.json())
         .then((data) => {
+          console.log("edit",data)
           setFormData({
             ...data,
             password:""
@@ -58,10 +58,10 @@ function AddUserDetail() {
   };
 
   const requiredFields = [
-    "first_name",
-    "last_name",
-    "email_id",
+    "name",
     "password",
+    "email_id",
+  
   ];
 
   const handleSubmit = async (e) => {
@@ -79,10 +79,10 @@ function AddUserDetail() {
       let method = "";
 
       if (id) {
-        url = `${BASE_URL}user_details/update/${id}`;
+        url = `${BASE_URL}admin_login/update/${id}`;
         method = "PUT";
       } else {
-        url = `${BASE_URL}user_details/save`;
+        url = `${BASE_URL}admin_login/save`;
         method = "POST";
       }
 
@@ -90,17 +90,16 @@ function AddUserDetail() {
         method: method,
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + sessionStorage.getItem("adminToken"),
+          "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
         },
-
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        alert(id ? "User Updated Successfully" : "User Added Successfully");
-        navigate("/user_list");
+        alert(id ? "User Updated Successfully" : "Admin Added Successfully");
+        navigate("/admin_list");
       } else {
         alert("Error: " + (data?.detail || "Something went wrong"));
       }
@@ -114,7 +113,7 @@ function AddUserDetail() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6">
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-xl">
         <h3 className="text-xl font-bold mb-4 text-center">
-          {id ? "Edit User" : "Add User"}
+          {id ? "Edit Admin" : "Add Admin"}
         </h3>
 
         <form onSubmit={handleSubmit} className="w-50">
@@ -122,29 +121,16 @@ function AddUserDetail() {
             <label>Name</label>
             <input
               type="text"
-              name="first_name"
-              className={`form-control ${errors.first_name ? "border-red-500" : ""}`}
-              value={formData.first_name}
+              name="name"
+              className={`form-control ${errors.name ? "border-red-500" : ""}`}
+              value={formData.name}
               onChange={handleChange}
             />
-            {errors.first_name && (
-              <small style={{ color: "red" }}>{errors.first_name}</small>
+            {errors.name && (
+              <small style={{ color: "red" }}>{errors.name}</small>
             )}
           </div>
 
-          <div className="mb-3">
-            <label>Last Name</label>
-            <input
-              type="text"
-              name="last_name"
-              className={`form-control ${errors.last_name ? "border-red-500" : ""}`}
-              value={formData.last_name}
-              onChange={handleChange}
-            />
-            {errors.last_name && (
-              <small style={{ color: "red" }}>{errors.last_name}</small>
-            )}
-          </div>
 
           <div className="mb-3">
             <label>Email</label>
@@ -196,4 +182,4 @@ function AddUserDetail() {
   );
 }
 
-export default AddUserDetail;
+export default AddadminLogin;
