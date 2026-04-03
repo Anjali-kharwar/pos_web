@@ -10,6 +10,10 @@ import AddProduct from "./component/product_details";
 import ProductList from "./component/product_list";
 import AddUserDetail from"./component/user_detail";
 import UsertList from "./component/user_list";
+import AddadminLogin from"./component/admin";
+import AdminList from "./component/admin_list";
+
+
 
 
 function AppRoutes() {
@@ -26,7 +30,13 @@ function AppRoutes() {
                 <Route path="/edit_product/:id" element={<PrivateRoute><Layout><AddProduct/></Layout></PrivateRoute>}/>
                 <Route path="/add_user_detail" element={<PrivateRoute><Layout><AddUserDetail/></Layout></PrivateRoute>}/>
                 <Route path="/user_list" element={<PrivateRoute><Layout><UsertList /></Layout></PrivateRoute>} />
-                 <Route path="/edit_user/:id" element={<PrivateRoute><Layout><AddUserDetail/></Layout></PrivateRoute>}/>
+                <Route path="/edit_user/:id" element={<PrivateRoute><Layout><AddUserDetail/></Layout></PrivateRoute>}/>
+                <Route path="/add_admin" element={<PrivateRoute><Layout><AddadminLogin /></Layout></PrivateRoute>} /> 
+                <Route path="/admin_list" element={<PrivateRoute><Layout><AdminList /></Layout></PrivateRoute>} />
+                 <Route path="/edit_admin/:id" element={<PrivateRoute><Layout><AddadminLogin/></Layout></PrivateRoute>}/>
+
+
+
             </Routes>
         </BrowserRouter>    
     );

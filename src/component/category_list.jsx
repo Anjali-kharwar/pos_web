@@ -3,23 +3,37 @@ import { Link } from "react-router-dom";
 
 function CategoryList() {
  const BASE_URL = process.env.REACT_APP_BASE_URL;
+
   const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    fetch(`${BASE_URL}category/list`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            setCategories(data);
-        })
-        .catch(error => console.log(error));
+useEffect(() => {
+  fetch(`${BASE_URL}category/list`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + sessionStorage.getItem("adminToken")
+    }
+  })
+    .then(res => {
+      if (res.status === 401) {
+        alert("Session expired, login again");
 
-  }, [BASE_URL]);
+        sessionStorage.removeItem("adminToken");
+        window.location.href = "/";  
+
+        return null;
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (!data) return;
+
+      console.log("API DATA", data);
+
+      setCategories(Array.isArray(data) ? data : []);
+    })
+    .catch(error => console.log(error));
+}, [BASE_URL]);
 
 
   // DELETE FUNCTION

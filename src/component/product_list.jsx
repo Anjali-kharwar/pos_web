@@ -102,7 +102,6 @@ function ProductList() {
                             <td>{product.cost_price}</td>
                             <td>{product.qty}</td>
                             <td>{product.mrp}</td>
-                            <td>{product.status}</td>
                             <td>{product.is_active ? "Yes" : "No"}</td>
 
                             <td>
